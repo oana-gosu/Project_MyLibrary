@@ -1,0 +1,27 @@
+﻿@page "/Books/{Id:int}"
+@using MyLibrary.WebUI.Models
+@inject HttpClient Http
+
+<h3>BookDetails</h3>
+
+<button class="btn btn-secondary"><a href="Books">Go to books</a></button>
+
+<div class="book-info">
+    <p>Name: @book.Title</p>
+    <p>Athor: @book.Author</p>
+    <p>Category: @book.CategoryId</p>
+    <p>Details: @book.Details</p>
+</div>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    BookResponseModel book = new BookResponseModel();
+  
+    protected override async Task OnInitializedAsync()
+    {
+        book = await Http.GetFromJsonAsync<BookResponseModel>($"books/{Id}");
+    }
+}
+
