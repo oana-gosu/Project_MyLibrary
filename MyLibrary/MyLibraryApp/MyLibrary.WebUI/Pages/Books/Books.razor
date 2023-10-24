@@ -1,0 +1,61 @@
+﻿@page "/Books"
+@using MyLibrary.WebUI.Models
+@inject HttpClient Http
+@inject NavigationManager NavManager
+
+<h3>Books</h3>
+
+ @if (books.Count == 0)
+        {
+            <div class="col-12">
+                <p class="text-muted">No products found. Still loading...</p>
+            </div>
+        }
+        else
+        {
+            @foreach (var book in books)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <img src=@book.Picture class="card-img-top" alt="@book.Title">
+                        <div class="card-body">
+                            <h5 class="card-title">@book.Title</h5>
+                            <p class="card-text">Author: @book.Author</p>
+                            <p class="card-text">Category: @book.CategoryId</p>
+                            <button class="btn btn-secondary" @onclick="@(() => { NavManager.NavigateTo($"/books/{book.Id}");})">Details</button>
+                            <button class="btn btn-secondary">Add to Order</button>
+                        </div>
+                    </div>
+                </div>
+            }
+
+        }
+
+@code {
+        
+    private List<BookResponseModel> books = new List<BookResponseModel>();
+    private bool showLoadingMessage = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        books = await Http.GetFromJsonAsync<List<BookResponseModel>>("products?orderBy=createdAt");
+        showLoadingMessage = false;
+    }
+
+    //private async Task DeleteCurrentProductAsync(int productId)
+    //{
+    //    showLoadingMessage = true;
+    //    await Http.DeleteAsync($"products/{productId}");
+
+    //    // CLIENT
+    //    // var productToBeRemoved = products.Where(x => x.Id == productId).First();
+    //    //
+    //    // products.Remove(productToBeRemoved);
+
+    //    // SERVER
+    //    products = await Http.GetFromJsonAsync<List<ProductResponseModel>>("products");
+
+    //    showLoadingMessage = false;
+    //}
+
+}

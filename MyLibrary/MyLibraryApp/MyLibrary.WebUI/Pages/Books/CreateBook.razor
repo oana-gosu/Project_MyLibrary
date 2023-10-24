@@ -1,0 +1,72 @@
+﻿@page "/Administrator/CreateBook"
+@using MyLibrary.WebUI.Models
+@inject HttpClient Http
+
+<h3>CreateBook</h3>
+
+<EditForm class="d-flex flex-column align-items-left" Model="@book" OnValidSubmit="HandleValidSubmitAsync">
+    <DataAnnotationsValidator />
+    
+    <div class="m-2">
+        <label for="title">Title: </label>
+        <InputText id="title" @bind-Value="@book.Title"></InputText>
+        <ValidationMessage For="@(() => book.Title)"></ValidationMessage>
+    </div>
+
+    <div class="m-2">
+        <label for="author">Author: </label>
+        <InputText id="author" @bind-Value="@book.Author"></InputText>
+        <ValidationMessage For="@(() => book.Author)"></ValidationMessage>
+    </div>
+
+    <div class="m-2">
+        <label for="picture">Picture: </label>
+        <InputText id="picture" @bind-Value="@book.Picture"></InputText>
+        <ValidationMessage For="@(() => book.Picture)"></ValidationMessage>
+    </div>
+
+    <div class="m-2">
+        <label for="details">Details: </label>
+        <InputText id="details" @bind-Value="@book.Details"></InputText>
+        <ValidationMessage For="@(() => book.Details)"></ValidationMessage>
+    </div>
+
+    @*<div class="m-2">
+        <label for="category">Category: </label>
+        <InputSelect id="category" @bind-Value="@book.Category">
+            @foreach (var category in Enum.GetValues<Category>())
+            {
+                <option value="@category">@category</option>
+            }
+        </InputSelect>
+        <ValidationMessage For="@(() => book.Category)"></ValidationMessage>
+    </div>*@
+
+    <div class="m-2">
+        <label for="stock">Stock: </label>
+        <InputNumber id="stock" @bind-Value="@book.Stock"></InputNumber>
+        <ValidationMessage For="@(() => book.Stock)"></ValidationMessage>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Add Book</button>
+</EditForm>
+
+@if (displayMessage)
+{
+    <div class="d-flex flex-row align-items-left">
+        <p style="font-size: 25px;color: green;">The product was created.</p>
+    </div>
+}
+
+@code {
+        private CreateBookRequestModel book = new();
+
+        private bool displayMessage = false;
+
+        public async Task HandleValidSubmitAsync()
+        {
+        await Http.PostAsJsonAsync("books", book);
+        displayMessage = true;
+        book = new();
+        }
+}
